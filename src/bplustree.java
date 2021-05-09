@@ -20,8 +20,12 @@ public class bplustree {
         RecordNode recordNodeE = new RecordNode();
         IndexAndDataStored recordE = new IndexAndDataStored("E", "Rest of Data");
         recordNodeE.setData(recordE);
+        RecordNode recordNodeF = new RecordNode();
+        IndexAndDataStored recordF = new IndexAndDataStored("F", "Rest of Data");
+        recordNodeF.setData(recordF);
         root.addBlock(firstBlock);
         root.addNode(recordNodeB);
+        root.addNode(recordNodeF);
         root.addNode(recordNodeA);
         root.addNode(recordNodeC);
         root.addNode(recordNodeD);
@@ -29,16 +33,18 @@ public class bplustree {
 //        firstBlock.addNode(recordNodeC);
 //        firstBlock.addNode(recordNodeD);
 //        System.out.println(firstBlock.toString());
-        root.restructure();
         root.addNode(recordNodeE);
+        System.out.println(root.toString());
+
     }
 }
 
 class Root {
     private ArrayList<BlockOfRecordNodes> rootBlocks = new ArrayList<>();
-    private ArrayList<IndexNode> index = new ArrayList<>();
+    private ArrayList<BlockOfIndexNodes> index = new ArrayList<>();
 
     public void addNode(RecordNode rn) {
+        System.out.println(rn.getData().toString());
         BlockOfRecordNodes selectedBlock = this.searchWhichBlock(rn);
         selectedBlock.addNode(rn);
         this.restructure();
@@ -50,19 +56,43 @@ class Root {
             return rootBlocks.get(0);
         } else {
             System.out.println("Record Node to Search " + rn.getData().getIndex().toString());
-            System.out.println("Block belongs to: " + traverse(rnIndex, index.get(0)).toString());
-            return traverse(rnIndex, index.get(0));
+            System.out.println("Block belongs to: " + traverse(rnIndex, index.get(0).getIndexData().get(0)).toString());
+            IndexNode startTraversingFromThisIndex = null;
+            BlockOfIndexNodes highestBlockOfIndex = index.get(0);
+            int startAtIndexNode = highestBlockOfIndex.size() - 1;
+            for (int i = 0; i < highestBlockOfIndex.size(); i++) {
+                String indexOfIndexNodeInHighestBlock = highestBlockOfIndex.getIndexData().get(i).getData().getIndex();
+                if (indexOfIndexNodeInHighestBlock.compareTo(rnIndex) >= 0) {
+                    startAtIndexNode = i;
+                    break;
+                }
+            }
+            startTraversingFromThisIndex = highestBlockOfIndex.getIndexData().get(startAtIndexNode);
+            return traverse(rnIndex, startTraversingFromThisIndex);
         }
     }
 
+    // reference https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java //
     public BlockOfRecordNodes traverse(String rnIndex, IndexNode root) {
         String rootIndex = root.getData().getIndex();
         BlockOfRecordNodes blockToReturn = null;
         if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() != null) && (root.getLeftBlock() == null)) {
-            traverse(rnIndex, root.getLeft());
+            BlockOfIndexNodes leftBlockIndexNodes = root.getLeft();
+            for (int i = 0; i < leftBlockIndexNodes.size(); i++) {
+                IndexNode selectedIndexNode = leftBlockIndexNodes.getIndexData().get(i);
+                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
+                    traverse(rnIndex, selectedIndexNode);
+                }
+            }
         }
         if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() != null) && (root.getRightBlock() == null)) {
-            traverse(rnIndex, root.getRight());
+            BlockOfIndexNodes rightBlockIndexNodes = root.getRight();
+            for (int i = 0; i < rightBlockIndexNodes.size(); i++) {
+                IndexNode selectedIndexNode = rightBlockIndexNodes.getIndexData().get(i);
+                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
+                    traverse(rnIndex, selectedIndexNode);
+                }
+            }
         }
         if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() == null) && (root.getLeftBlock() != null)) {
             return root.getLeftBlock();
@@ -83,36 +113,6 @@ class Root {
 //            return newBlockOnRight;
 //        }
         return blockToReturn;
-    }
-
-    public BlockOfIndexNodes traverseIndex(String rnIndex, IndexNode root) {
-        String rootIndex = root.getData().getIndex();
-        BlockOfIndexNodes indexBlockToReturn = null;
-        if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() != null) && (root.getLeftBlock() == null)) {
-            traverseIndex(rnIndex, root.getLeft());
-        }
-        if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() != null) && (root.getRightBlock() == null)) {
-            traverseIndex(rnIndex, root.getRight());
-        }
-//        if ((rnIndex.compareTo(rootIndex) <=0) && (root.getLeft() == null) && (root.getLeftBlock() != null)){
-//            return root.getLeft();
-//        }
-//        if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() == null) && (root.getRightBlock() != null)){
-//            return root.getRight();
-//        }
-//        if ((rnIndex.compareTo(rootIndex) <=0) && (root.getLeft() == null) && (root.getLeftBlock() == null)){
-//            System.out.println("REACHED LEFT");
-//            BlockOfRecordNodes newBlockOnLeft = new BlockOfRecordNodes();
-//            root.setLeftPointer(newBlockOnLeft);
-//            return newBlockOnLeft;
-//        }
-//        if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() == null) && (root.getRightBlock() == null)){
-//            System.out.println("REACHED RIGHT");
-//            BlockOfRecordNodes newBlockOnRight = new BlockOfRecordNodes();
-//            root.setLeftPointer(newBlockOnRight);
-//            return newBlockOnRight;
-//        }
-        return indexBlockToReturn;
     }
 
     private int maximumSize;
@@ -144,27 +144,38 @@ class Root {
                     blockSplitPart2.addNode(blockToBeRestructuredData.get(k));
                 }
                 if (index.isEmpty()) {
+                    BlockOfIndexNodes firstIndexBlock = new BlockOfIndexNodes();
+                    IndexNode appendedIndexNode = new IndexNode(middleNode.getData(), blockSplitPart1, blockSplitPart2);
+                    firstIndexBlock.addNode(appendedIndexNode);
+                    blockSplitPart1.setParentIndexBlock(firstIndexBlock);
+                    blockSplitPart2.setParentIndexBlock(firstIndexBlock);
                     System.out.println("blocksplitpart1 " + blockSplitPart1);
                     System.out.println("blocksplitpart2 " + blockSplitPart2);
-                    index.add(new IndexNode(middleNode.getData(), blockSplitPart1, blockSplitPart2));
+                    index.add(firstIndexBlock);
                     System.out.println("middleNode" + middleNode.getData().toString());
                     String testing2 = "[";
                     System.out.println("indexsize: " + index.size());
                     for (int b = 0; b < index.size(); b++) {
-                        testing2 += index.get(b).toStringWithBlock() + ", ";
+                        testing2 += (b + 1) + " level *** " + firstIndexBlock.getIndexData().get(b).toString() + ", ";
                     }
                     testing2 += "]";
                     System.out.println("Index: " + testing2);
                 } else {
                     System.out.println("blocksplitpart1 " + blockSplitPart1);
                     System.out.println("blocksplitpart2 " + blockSplitPart2);
-                    index.add(new IndexNode(middleNode.getData(), blockSplitPart1, blockSplitPart2));
-                    index.get(0).setRightPointer(index.get(1).getLeftBlock());
+                    IndexNode startTraversingFromThisIndex = null;
+                    // STUCK, HOW TO KNOW WHICH BLOCKOFINDEXNODE IN INDEX SHOULD BE PLACED AT //
+                    int indexOfParentInIndexVar = index.indexOf(blockToBeRestructured.getParentIndexBlock());
+                    BlockOfIndexNodes indexBlockLocation = index.get(indexOfParentInIndexVar);
+                    IndexNode appendedIndexNode = new IndexNode(middleNode.getData(), blockSplitPart1, blockSplitPart2);
+                    indexBlockLocation.addNode(appendedIndexNode);
+                    int previousIndexIndex = indexBlockLocation.getIndexData().indexOf(appendedIndexNode) - 1;
+                    indexBlockLocation.getIndexData().get(previousIndexIndex).setRightPointer(appendedIndexNode.getLeftBlock());
                     System.out.println("middleNode" + middleNode.getData().toString());
-                    String testing2 = "[";
+                    String testing2 = "Level 1 [ ";
                     System.out.println("indexsize: " + index.size());
-                    for (int b = 0; b < index.size(); b++) {
-                        testing2 += index.get(b).toStringWithBlock() + ", ";
+                    for (int b = 0; b < indexBlockLocation.size(); b++) {
+                        testing2 += indexBlockLocation.getIndexData().get(b).getData().toString() + ", ";
                     }
                     testing2 += "]";
                     System.out.println("Index: " + testing2);
@@ -192,11 +203,22 @@ class Root {
     public ArrayList<BlockOfRecordNodes> getRootBlocks() {
         return rootBlocks;
     }
+
+    @Override
+    public String toString() {
+        String stringToBeReturned = "ROOT: [";
+        for (int a = 0; a < rootBlocks.size(); a++) {
+            stringToBeReturned += rootBlocks.get(a).toString() + ", ";
+        }
+        stringToBeReturned += "]";
+        return stringToBeReturned;
+    }
 }
 
 class BlockOfRecordNodes {
     private ArrayList<RecordNode> blockData = new ArrayList<>();
     private BlockOfRecordNodes neighbourRight = null;
+    private BlockOfIndexNodes parentIndexBlock = null;
 
     public BlockOfRecordNodes() {
     }
@@ -234,9 +256,18 @@ class BlockOfRecordNodes {
         return neighbourRight;
     }
 
+    public BlockOfIndexNodes getParentIndexBlock() {
+        return parentIndexBlock;
+    }
+
+    public void setParentIndexBlock(BlockOfIndexNodes parentIndexBlock) {
+        this.parentIndexBlock = parentIndexBlock;
+    }
+
     public void setNeighbourRight(BlockOfRecordNodes neighbourRight) {
         this.neighbourRight = neighbourRight;
     }
+
 
     @Override
     public String toString() {
@@ -399,7 +430,7 @@ class RecordNode {
 // Reference from https://examples.javacodegeeks.com/java-node-example/#:~:text=Applications%20of%20Node%20class&text=Java%20Node%20class%20is%20actually,any%20non%2Dsequential%20Data%20structure. //
 class IndexNode {
     private IndexAndDataStored data;
-    private IndexNode left, right;
+    private BlockOfIndexNodes left, right;
     private BlockOfRecordNodes leftBlock, rightBlock;
 
     public IndexNode() {
@@ -408,7 +439,7 @@ class IndexNode {
         right = null;
     }
 
-    public IndexNode(IndexAndDataStored data, IndexNode left, IndexNode right) {
+    public IndexNode(IndexAndDataStored data, BlockOfIndexNodes left, BlockOfIndexNodes right) {
         this.data = data;
         this.left = left;
         this.right = right;
@@ -425,11 +456,11 @@ class IndexNode {
     }
 
     // Setter methods
-    public void setRightPointer(IndexNode right) {
+    public void setRightPointer(BlockOfIndexNodes right) {
         this.right = right;
     }
 
-    public void setLeftPointer(IndexNode left) {
+    public void setLeftPointer(BlockOfIndexNodes left) {
         this.left = left;
     }
 
@@ -442,11 +473,11 @@ class IndexNode {
     }
 
     // Getter methods
-    public IndexNode getLeft() {
+    public BlockOfIndexNodes getLeft() {
         return left;
     }
 
-    public IndexNode getRight() {
+    public BlockOfIndexNodes getRight() {
         return right;
     }
 
