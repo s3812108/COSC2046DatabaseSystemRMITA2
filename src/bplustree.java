@@ -6,34 +6,38 @@ public class bplustree {
         BlockOfRecordNodes firstBlock = new BlockOfRecordNodes();
 
         RecordNode recordNodeA = new RecordNode();
-        IndexAndDataStored recordA = new IndexAndDataStored("A", "Rest of Data");
+        IndexAndDataStored recordA = new IndexAndDataStored("A", "Data content A");
         recordNodeA.setData(recordA);
         RecordNode recordNodeB = new RecordNode();
-        IndexAndDataStored recordB = new IndexAndDataStored("B", "Rest of Data");
+        IndexAndDataStored recordB = new IndexAndDataStored("B", "Data content B");
         recordNodeB.setData(recordB);
         RecordNode recordNodeC = new RecordNode();
-        IndexAndDataStored recordC = new IndexAndDataStored("C", "Rest of Data");
+        IndexAndDataStored recordC = new IndexAndDataStored("C", "Data content C");
         recordNodeC.setData(recordC);
         RecordNode recordNodeD = new RecordNode();
-        IndexAndDataStored recordD = new IndexAndDataStored("D", "Rest of Data");
+        IndexAndDataStored recordD = new IndexAndDataStored("D", "Data content D");
         recordNodeD.setData(recordD);
         RecordNode recordNodeE = new RecordNode();
-        IndexAndDataStored recordE = new IndexAndDataStored("E", "Rest of Data");
+        IndexAndDataStored recordE = new IndexAndDataStored("E", "Data content E");
         recordNodeE.setData(recordE);
         RecordNode recordNodeF = new RecordNode();
-        IndexAndDataStored recordF = new IndexAndDataStored("F", "Rest of Data");
+        IndexAndDataStored recordF = new IndexAndDataStored("F", "Data content F");
         recordNodeF.setData(recordF);
+        //RecordNode recordNodeG = new RecordNode();
+        //IndexAndDataStored recordG = new IndexAndDataStored("G", "Data content G");
+        //recordNodeG.setData(recordG);
         root.addBlock(firstBlock);
         root.addNode(recordNodeB);
         root.addNode(recordNodeF);
         root.addNode(recordNodeA);
         root.addNode(recordNodeC);
+        root.addNode(recordNodeE);
         root.addNode(recordNodeD);
+        //root.addNode(recordNodeG);
 //        firstBlock.addNode(recordNodeA);
 //        firstBlock.addNode(recordNodeC);
 //        firstBlock.addNode(recordNodeD);
 //        System.out.println(firstBlock.toString());
-        root.addNode(recordNodeE);
         System.out.println(root.toString());
 
     }
@@ -69,6 +73,26 @@ class Root {
             }
             startTraversingFromThisIndex = highestBlockOfIndex.getIndexData().get(startAtIndexNode);
             return traverse(rnIndex, startTraversingFromThisIndex);
+        }
+    }
+
+    public BlockOfIndexNodes searchWhichIndexBlockLastVisit(RecordNode rn) {
+        String rnIndex1 = rn.getData().getIndex();
+        if (index.isEmpty()) {
+            return index.get(0);
+        } else {
+            IndexNode startTraversingFromThisIndex = null;
+            BlockOfIndexNodes highestBlockOfIndex = index.get(0);
+            int startAtIndexNode = highestBlockOfIndex.size() - 1;
+            for (int i = 0; i < highestBlockOfIndex.size(); i++) {
+                String indexOfIndexNodeInHighestBlock = highestBlockOfIndex.getIndexData().get(i).getData().getIndex();
+                if (indexOfIndexNodeInHighestBlock.compareTo(rnIndex1) >= 0) {
+                    startAtIndexNode = i;
+                    break;
+                }
+            }
+            startTraversingFromThisIndex = highestBlockOfIndex.getIndexData().get(startAtIndexNode);
+            return traverseTillLastIndexBlock(rnIndex1, startTraversingFromThisIndex, highestBlockOfIndex);
         }
     }
 
@@ -113,6 +137,37 @@ class Root {
 //            return newBlockOnRight;
 //        }
         return blockToReturn;
+    }
+
+    // reference https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java //
+    public BlockOfIndexNodes traverseTillLastIndexBlock(String rnIndex, IndexNode root, BlockOfIndexNodes currentlyIn) {
+        String rootIndex = root.getData().getIndex();
+        BlockOfIndexNodes blockOfIndexNodesToReturn = null;
+        BlockOfIndexNodes leftBlockIndexNodes = root.getLeft();
+        BlockOfIndexNodes rightBlockIndexNodes = root.getRight();
+        if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() != null) && (root.getLeftBlock() == null)) {
+            for (int i = 0; i < leftBlockIndexNodes.size(); i++) {
+                IndexNode selectedIndexNode = leftBlockIndexNodes.getIndexData().get(i);
+                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
+                    traverseTillLastIndexBlock(rnIndex, selectedIndexNode, leftBlockIndexNodes);
+                }
+            }
+        }
+        if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() != null) && (root.getRightBlock() == null)) {
+            for (int i = 0; i < rightBlockIndexNodes.size(); i++) {
+                IndexNode selectedIndexNode = rightBlockIndexNodes.getIndexData().get(i);
+                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
+                    traverseTillLastIndexBlock(rnIndex, selectedIndexNode, rightBlockIndexNodes);
+                }
+            }
+        }
+        if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() == null) && (root.getLeftBlock() != null)) {
+            return currentlyIn;
+        }
+        if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() == null) && (root.getRightBlock() != null)) {
+            return currentlyIn;
+        }
+        return blockOfIndexNodesToReturn;
     }
 
     private int maximumSize;
@@ -161,11 +216,28 @@ class Root {
                     testing2 += "]";
                     System.out.println("Index: " + testing2);
                 } else {
-                    System.out.println("blocksplitpart1 " + blockSplitPart1);
-                    System.out.println("blocksplitpart2 " + blockSplitPart2);
+                    BlockOfIndexNodes blockSplitPart1Parent = searchWhichIndexBlockLastVisit(blockSplitPart1.getBlockData().get(blockSplitPart1.size() - 1));
+                    blockSplitPart1.setParentIndexBlock(blockSplitPart1Parent);
+                    BlockOfIndexNodes blockSplitPart2Parent = searchWhichIndexBlockLastVisit(blockSplitPart1.getBlockData().get(blockSplitPart1.size() - 1));
+                    blockSplitPart2.setParentIndexBlock(blockSplitPart2Parent);
+                    System.out.println("blocksplitpart1Parent " + blockSplitPart2Parent);
+                    System.out.println("blocksplitpart2Parent " + blockSplitPart2Parent);
+                    if (rootBlocks.size() == 3) {
+                        System.out.println("parentsblockof0 " + rootBlocks.get(0).getParentIndexBlock());
+                        System.out.println("parentsblockof1 " + rootBlocks.get(1).getParentIndexBlock());
+                        System.out.println("parentsblockof2 " + rootBlocks.get(2).getParentIndexBlock());
+                    }
+
                     IndexNode startTraversingFromThisIndex = null;
                     // STUCK, HOW TO KNOW WHICH BLOCKOFINDEXNODE IN INDEX SHOULD BE PLACED AT //
                     int indexOfParentInIndexVar = index.indexOf(blockToBeRestructured.getParentIndexBlock());
+                    System.out.println("blockToBeRestructured " + blockToBeRestructured);
+                    System.out.println("blockToBeRestructured.getParentIndexBlock()" + blockToBeRestructured.getParentIndexBlock());
+                    String testingString2 = "";
+                    for (int a = 0; a < index.get(0).getIndexData().size(); a++) {
+                        testingString2 += index.get(0).getIndexData().get(a).toStringWithBlock() + ", ";
+                    }
+                    System.out.println("indexHAAH" + testingString2);
                     BlockOfIndexNodes indexBlockLocation = index.get(indexOfParentInIndexVar);
                     IndexNode appendedIndexNode = new IndexNode(middleNode.getData(), blockSplitPart1, blockSplitPart2);
                     indexBlockLocation.addNode(appendedIndexNode);
@@ -192,7 +264,6 @@ class Root {
                 testingString += "]";
                 System.out.println(testingString);
             }
-
         }
     }
 
@@ -206,12 +277,18 @@ class Root {
 
     @Override
     public String toString() {
-        String stringToBeReturned = "ROOT: [";
+        String stringToBeReturned1 = "ROOT: [";
         for (int a = 0; a < rootBlocks.size(); a++) {
-            stringToBeReturned += rootBlocks.get(a).toString() + ", ";
+            stringToBeReturned1 += rootBlocks.get(a).toString() + ", ";
         }
-        stringToBeReturned += "]";
-        return stringToBeReturned;
+        stringToBeReturned1 += "]";
+        String stringToBeReturned2 = "INDEX: [";
+        for (int a = 0; a < index.size(); a++) {
+            stringToBeReturned2 += index.get(a).toString() + ", ";
+        }
+        stringToBeReturned2 += "]";
+        String stringtobereturned = stringToBeReturned1 + "\n" + stringToBeReturned2;
+        return stringtobereturned;
     }
 }
 
