@@ -47,6 +47,9 @@ public class bplustree {
         RecordNode recordNodeN = new RecordNode();
         IndexAndDataStored recordN = new IndexAndDataStored("N", "Data content N");
         recordNodeN.setData(recordN);
+        RecordNode recordNodeO = new RecordNode();
+        IndexAndDataStored recordO = new IndexAndDataStored("O", "Data content O");
+        recordNodeO.setData(recordO);
         root.addBlock(firstBlock);
         root.addNode(recordNodeB);
         root.addNode(recordNodeF);
@@ -62,6 +65,8 @@ public class bplustree {
         root.addNode(recordNodeK);
         root.addNode(recordNodeM);
         root.addNode(recordNodeN);
+        root.addNode(recordNodeO);
+        System.out.println("Search M: " + root.search("O"));
 //        firstBlock.addNode(recordNodeA);
 //        firstBlock.addNode(recordNodeC);
 //        firstBlock.addNode(recordNodeD);
@@ -159,38 +164,66 @@ class Root {
         // Used when there's more than 1 level of BlockOfIndexNodes on the tree //
         // If the index to be searched is less or equal to than the value of the selected indexNode, go to its left pointer (which points to a BlockOfIndexNodes) //
         if ((rnIndex.compareTo(rootIndex) <= 0) && (root.getLeft() != null) && (root.getLeftBlock() == null)) {
+            System.out.println("CHECKPOINT 1");
             BlockOfIndexNodes leftBlockIndexNodes = root.getLeft();
+            System.out.println("LEFTIE " + leftBlockIndexNodes.toString());
             // Goes through each IndexNode in the BlockOfIndexNode that the pointer selects //
-            for (int i = 0; i < leftBlockIndexNodes.size(); i++) {
-                IndexNode selectedIndexNode = leftBlockIndexNodes.getIndexData().get(i);
-                System.out.println(selectedIndexNode.getData().getIndex());
-                System.out.println(selectedIndexNode.getData().getIndex().compareTo(rootIndex));
-                // If the next IndexNode to be searched from has a greater value than the previous index //
-                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
-                    System.out.println("GOES LEFT" + selectedIndexNode);
-                    // Goes to the next index, get the result back once it founds the BlockOfRecordNodes
-                    blockToReturn = traverse(rnIndex, selectedIndexNode);
+            int indexChosenLocationNumber = 0;
+            IndexNode selectedIndexNode = null;
+            for (int i = leftBlockIndexNodes.size() - 1; i >= 0; i--) {
+                selectedIndexNode = leftBlockIndexNodes.getIndexData().get(i);
+                System.out.println("selectedIndexNode.getData().getIndex() " + selectedIndexNode.getData().getIndex());
+                System.out.println("rootIndex " + rootIndex);
+                System.out.println(selectedIndexNode.getData().getIndex().compareTo(rnIndex));
+                if (rnIndex.compareTo(leftBlockIndexNodes.getIndexData().get(leftBlockIndexNodes.size() - 1).getData().getIndex()) > 0) {
+                    System.out.println("reqached here boyy");
+                    indexChosenLocationNumber = leftBlockIndexNodes.size() - 1;
+                    break;
+                }
+
+                if (selectedIndexNode.getData().getIndex().compareTo(rnIndex) <= 0) {
+                    indexChosenLocationNumber = i;
+                    break;
                 }
             }
+            selectedIndexNode = leftBlockIndexNodes.getIndexData().get(indexChosenLocationNumber);
+            blockToReturn = traverse(rnIndex, selectedIndexNode);
+            if (selectedIndexNode.getLeftBlock() != null) {
+                System.out.println("ASDHAODHODH " + selectedIndexNode.toStringWithBlock());
+            }
+
         }
         // Used when there's more than 1 level of BlockOfIndexNodes on the tree //
         // If the index to be searched is greater than the value of the selected indexNode, go to its right pointer (which points to a BlockOfIndexNodes) //
         if ((rnIndex.compareTo(rootIndex) > 0) && (root.getRight() != null) && (root.getRightBlock() == null)) {
+            System.out.println("CHECKPOINT 2");
             BlockOfIndexNodes rightBlockIndexNodes = root.getRight();
+            int indexChosenLocationNumber = 0;
+            IndexNode selectedIndexNode = null;
             // Goes through each IndexNode in the BlockOfIndexNode that the pointer selects //
-            for (int i = 0; i < rightBlockIndexNodes.size(); i++) {
-                IndexNode selectedIndexNode = rightBlockIndexNodes.getIndexData().get(i);
+            for (int i = rightBlockIndexNodes.size() - 1; i >= 0; i--) {
+                selectedIndexNode = rightBlockIndexNodes.getIndexData().get(i);
+                System.out.println("selectedIndexNode.getData().getIndex() " + selectedIndexNode.getData().getIndex());
+                System.out.println("rootIndex " + rootIndex);
+                System.out.println(selectedIndexNode.getData().getIndex().compareTo(rnIndex));
                 // If the next IndexNode to be searched from has a greater value than the previous index //
-                if (selectedIndexNode.getData().getIndex().compareTo(rootIndex) >= 1) {
-                    System.out.println("GOES RIGHT" + selectedIndexNode.getData().toString());
+                if (rnIndex.compareTo(rightBlockIndexNodes.getIndexData().get(rightBlockIndexNodes.size() - 1).getData().getIndex()) > 0) {
+                    System.out.println("reqached here gurll");
+                    indexChosenLocationNumber = rightBlockIndexNodes.size() - 1;
+                    break;
+                }
+                if (selectedIndexNode.getData().getIndex().compareTo(rnIndex) <= 0) {
+                    indexChosenLocationNumber = i;
+                    break;
 //                    System.out.println("SHOULD NOT GO BACK TO TRAVERSE BOTTOM");
 //                    System.out.println("GOES RIGHT" + selectedIndexNode.getData().toString());
 //                    System.out.println("SHOULD NOT GO BACK TO TRAVERSE BOTTOM");
 //                    System.out.println("HERE IS THE RESULT: " + traverse(rnIndex, selectedIndexNode));
                     // Goes to the next index, get the result back once it founds the BlockOfRecordNodes
-                    blockToReturn = traverse(rnIndex, selectedIndexNode);
                 }
             }
+            selectedIndexNode = rightBlockIndexNodes.getIndexData().get(indexChosenLocationNumber);
+            blockToReturn = traverse(rnIndex, selectedIndexNode);
         }
         // If it reaches the 1 level above the root, and the index of the IndexNode is lesser or equal to the index to be searched
         // and if there's a BlockOfRecordNode that the IndexNode is pointing to, return the BlockOfRecordNode.
@@ -275,6 +308,38 @@ class Root {
 
     public Root(int maximumSize) {
         this.maximumSize = maximumSize;
+    }
+
+    public boolean search(String indexToSearch) {
+        System.out.println("//////////////////// LET'S START /////////////////////");
+        boolean foundTheIndex = false;
+        // Used as a parameter for the traverse function. It indicates which IndexNode it should start traversing from //
+        IndexNode startTraversingFromThisIndex = null;
+        // Get the block of IndexNodes from the highest level of the tree //
+        BlockOfIndexNodes highestBlockOfIndex = index.get(0);
+        // Serve as a counter. If the BlockOfIndexNodes goes by this [ A, B, C ], we put this counter on the very end (C)
+        int startAtIndexNode = highestBlockOfIndex.size() - 1;
+        for (int i = 0; i < highestBlockOfIndex.size(); i++) {
+            String indexOfIndexNodeInHighestBlock = highestBlockOfIndex.getIndexData().get(i).getData().getIndex();
+            // If the index selected (A or B or C) has a greater or equal value than the index that we are searching for,
+            // we would start from that particular index of the block
+            if (indexOfIndexNodeInHighestBlock.compareTo(indexToSearch) >= 0) {
+                startAtIndexNode = i;
+                break;
+            }
+        }
+
+        startTraversingFromThisIndex = highestBlockOfIndex.getIndexData().get(startAtIndexNode);
+        System.out.println("startTraversingFromThisIndex " + startTraversingFromThisIndex.toStringWithIndexNode());
+        BlockOfRecordNodes indexToSearchBelongsTo = traverse(indexToSearch, startTraversingFromThisIndex);
+        System.out.println("HMMM " + indexToSearchBelongsTo);
+        for (int i = 0; i < indexToSearchBelongsTo.size(); i++) {
+            if (indexToSearchBelongsTo.getBlockData().get(i).getData().getIndex().equals(indexToSearch)) {
+                foundTheIndex = true;
+                break;
+            }
+        }
+        return foundTheIndex;
     }
 
     // Restructure the tree //
@@ -392,7 +457,6 @@ class Root {
             }
         }
     }
-
 
     // Restructure the tree //
     public boolean restructureIndex() {
