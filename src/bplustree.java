@@ -35,6 +35,18 @@ public class bplustree {
         RecordNode recordNodeJ = new RecordNode();
         IndexAndDataStored recordJ = new IndexAndDataStored("J", "Data content J");
         recordNodeJ.setData(recordJ);
+        RecordNode recordNodeK = new RecordNode();
+        IndexAndDataStored recordK = new IndexAndDataStored("K", "Data content K");
+        recordNodeK.setData(recordK);
+        RecordNode recordNodeL = new RecordNode();
+        IndexAndDataStored recordL = new IndexAndDataStored("L", "Data content L");
+        recordNodeL.setData(recordL);
+        RecordNode recordNodeM = new RecordNode();
+        IndexAndDataStored recordM = new IndexAndDataStored("M", "Data content M");
+        recordNodeM.setData(recordM);
+        RecordNode recordNodeN = new RecordNode();
+        IndexAndDataStored recordN = new IndexAndDataStored("N", "Data content N");
+        recordNodeN.setData(recordN);
         root.addBlock(firstBlock);
         root.addNode(recordNodeB);
         root.addNode(recordNodeF);
@@ -46,6 +58,10 @@ public class bplustree {
         root.addNode(recordNodeH);
         root.addNode(recordNodeJ);
         root.addNode(recordNodeI);
+        root.addNode(recordNodeL);
+        root.addNode(recordNodeK);
+        root.addNode(recordNodeM);
+        root.addNode(recordNodeN);
 //        firstBlock.addNode(recordNodeA);
 //        firstBlock.addNode(recordNodeC);
 //        firstBlock.addNode(recordNodeD);
@@ -68,6 +84,9 @@ class Root {
         selectedBlock.addNode(rn);
         // Restructure the tree (restructuring the index is included in the given function) //
         this.restructure();
+        while (this.restructureIndex() == true) {
+            this.restructureIndex();
+        }
     }
 
     // Search which block does the record node belongs to //
@@ -376,11 +395,13 @@ class Root {
 
 
     // Restructure the tree //
-    public void restructureIndex() {
+    public boolean restructureIndex() {
+        boolean returnBool = false;
         for (int i = 0; i < index.size(); i++) {
             BlockOfIndexNodes blockIndexSplitPart1 = new BlockOfIndexNodes();
             BlockOfIndexNodes blockIndexSplitPart2 = new BlockOfIndexNodes();
             if (index.get(i).size() > maximumSize) {
+                returnBool = true;
                 String testingString1 = "Index: [";
                 for (int a = 0; a < index.size(); a++) {
                     testingString1 += index.get(a).toString() + ", ";
@@ -564,8 +585,10 @@ class Root {
                     System.out.println("NEW INDEX" + index.toString());
                 }
                 removeIndexDuplicate();
+                returnBool = true;
             }
         }
+        return returnBool;
     }
 
     public void addBlock(BlockOfRecordNodes newBlock) {
