@@ -1,0 +1,51 @@
+import java.util.ArrayList;
+
+// Reference from https://examples.javacodegeeks.com/java-node-example/#:~:text=Applications%20of%20Node%20class&text=Java%20Node%20class%20is%20actually,any%20non%2Dsequential%20Data%20structure. //
+class RecordNode {
+    private IndexAndDataStored data;
+    private RecordNode right;
+    private ArrayList<RecordNode> rightRootRecord = new ArrayList<>();
+
+    // Constructors //
+    public RecordNode() {
+        data = new IndexAndDataStored();
+        right = null;
+    }
+
+    public RecordNode(IndexAndDataStored data, RecordNode right) {
+        this.data = data;
+        this.right = right;
+    }
+
+    public RecordNode(IndexAndDataStored data, ArrayList<RecordNode> NextRootRecords) {
+        this.data = data;
+        this.rightRootRecord = NextRootRecords;
+        this.right = null;
+    }
+
+    // Setter methods //
+    public void setRightPointer(RecordNode right) {
+        this.right = right;
+    }
+
+    // Getter methods //
+    public RecordNode getRight() {
+        return right;
+    }
+
+    public IndexAndDataStored getData() {
+        return data;
+    }
+
+    public void setData(IndexAndDataStored data) {
+        this.data = data;
+    }
+
+    public ArrayList<RecordNode> getRightRootRecord() {
+        return rightRootRecord;
+    }
+
+    public void setRightRootRecord(ArrayList<RecordNode> rightRootRecord) {
+        this.rightRootRecord = rightRootRecord;
+    }
+}
