@@ -13,8 +13,8 @@ public class bplustree {
         recordNodeA.setData(recordA);
         RecordNode recordNodeB = new RecordNode();
         ArrayList<String> valueB = new ArrayList<>();
-        valueA.add("1");
-        valueA.add("Data content B");
+        valueB.add("1");
+        valueB.add("Data content B");
         IndexAndDataStored recordB = new IndexAndDataStored("A", valueB);
         recordNodeB.setData(recordB);
         ArrayList<String> valueC = new ArrayList<>();
@@ -30,8 +30,8 @@ public class bplustree {
         IndexAndDataStored recordD = new IndexAndDataStored("D", valueD);
         recordNodeD.setData(recordD);
         ArrayList<String> valueE = new ArrayList<>();
-        valueD.add("1");
-        valueD.add("Data content E");
+        valueE.add("1");
+        valueE.add("Data content E");
         RecordNode recordNodeE = new RecordNode();
         IndexAndDataStored recordE = new IndexAndDataStored("E", valueD);
         recordNodeE.setData(recordE);
@@ -113,6 +113,23 @@ public class bplustree {
         root.addNode(recordNodeH);
         long startTime = System.currentTimeMillis();
         System.out.println("Search A: " + root.search("A"));
+        System.out.println("Search B: " + root.search("B"));
+        System.out.println("Search C: " + root.search("C"));
+        System.out.println("Search D: " + root.search("D"));
+        System.out.println("Search E: " + root.search("E"));
+        System.out.println("Search F: " + root.search("F"));
+        System.out.println("Search G: " + root.search("G"));
+        System.out.println("Search H: " + root.search("H"));
+        System.out.println("Search I: " + root.search("I"));
+        System.out.println("Search J: " + root.search("J"));
+        System.out.println("Search K: " + root.search("K"));
+        System.out.println("Search L: " + root.search("L"));
+        System.out.println("Search M: " + root.search("M"));
+        System.out.println("Search N: " + root.search("N"));
+        System.out.println("Search O: " + root.search("O"));
+        System.out.println("Search P: " + root.search("P"));
+
+
         long endTime = System.currentTimeMillis();
         System.out.println("Time to search (ms): " + (endTime - startTime) / 1000);
 
