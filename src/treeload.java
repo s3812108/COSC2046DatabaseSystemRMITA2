@@ -74,7 +74,7 @@ public class treeload {
                             + "," + new String(dayBytes).trim() + "," + ByteBuffer.wrap(timeBytes).getInt()
                             + "," + ByteBuffer.wrap(sensorIdBytes).getInt() + "," +
                             new String(sensorNameBytes).trim() + "," + ByteBuffer.wrap(countsBytes).getInt();
-                    System.out.println("Record is " + record);
+//                    System.out.println("Record is " + record);
                     String[] eachDataInRecord = record.split(",");
                     RecordNode recordNodeToBeAdded = new RecordNode();
                     ArrayList<String> valueOfRecordNodeToBeAdded = new ArrayList<>();
