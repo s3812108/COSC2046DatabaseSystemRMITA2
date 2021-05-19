@@ -4,6 +4,7 @@ class BlockOfIndexNodes {
     private ArrayList<IndexNode> indexData = new ArrayList<>();
     private BlockOfIndexNodes neighbourRight = null;
     private BlockOfIndexNodes upperBlock = null;
+    private ArrayList<BlockOfIndexNodes> children = null;
 
     public BlockOfIndexNodes() {
     }
@@ -66,5 +67,13 @@ class BlockOfIndexNodes {
 
     public int size() {
         return indexData.size();
+    }
+
+    public ArrayList<BlockOfIndexNodes> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<BlockOfIndexNodes> children) {
+        this.children = children;
     }
 }

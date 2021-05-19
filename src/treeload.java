@@ -23,7 +23,7 @@ public class treeload {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         byte[] page = new byte[pageSize];
         FileInputStream inStream = null;
-        BPlusTreeIndex bplustree = new BPlusTreeIndex(3);
+        BPlusTreeIndex bplustree = new BPlusTreeIndex(20);
 
 
         try {
