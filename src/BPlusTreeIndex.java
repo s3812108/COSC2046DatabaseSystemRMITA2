@@ -560,10 +560,14 @@ class BPlusTreeIndex {
                 upperLevelIndexNode.addNode(appendedIndexNode);
                 blockIndexSplitPart1.setUpperBlock(upperLevelIndexNode);
                 blockIndexSplitPart2.setUpperBlock(upperLevelIndexNode);
-                ArrayList<BlockOfIndexNodes> childrenOfUpperLevelIndexNode = new ArrayList<BlockOfIndexNodes>();
-                childrenOfUpperLevelIndexNode.add(blockIndexSplitPart1);
-                childrenOfUpperLevelIndexNode.add(blockIndexSplitPart2);
-                upperLevelIndexNode.setChildren(childrenOfUpperLevelIndexNode);
+                BlockOfRecordNodes newBlockOfRecordNodes = new BlockOfRecordNodes();
+                // If the index is located 1 level above root
+                if ((blockIndexSplitPart1.getIndexData().get(0).getLeftBlock() != null) || (blockIndexSplitPart1.getIndexData().get(0).getRightBlock() != null)) {
+                    blockIndexSplitPart1.getIndexData().get(blockIndexSplitPart1.size() - 1).setRightPointer(newBlockOfRecordNodes);
+                }
+                if ((blockIndexSplitPart2.getIndexData().get(0).getLeftBlock() != null) || (blockIndexSplitPart2.getIndexData().get(0).getRightBlock() != null)) {
+                    blockIndexSplitPart2.getIndexData().get(0).setLeftPointer(newBlockOfRecordNodes);
+                }
                 if (upperBlockOfBlockOfIndexToBeRestructured == null) {
                     for (int b = 0; b < upperLevelIndexNode.size() - 1; b++) {
                         System.out.println("WWWWWW" + upperLevelIndexNode.getIndexData().get(b).getData().toString());
