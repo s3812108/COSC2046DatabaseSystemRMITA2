@@ -577,6 +577,28 @@ class BPlusTreeIndex {
                     //                    System.out.println("PUGGY " + upperLevelIndexNode.getIndexData().get(0).getLeftBlock());
                     //                    System.out.println("PUGGY " + upperLevelIndexNode.getIndexData().get(0).getLeft());
                     index.add(0, upperLevelIndexNode);
+                    for (int z = 0; z < index.size() - 1; z++) {
+                        BlockOfIndexNodes blockOfIndexBeingChecked = index.get(z);
+                        System.out.println("GIMANA1 " + blockOfIndexBeingChecked.toString());
+                        BlockOfIndexNodes upperOfBlockOfIndexBeingChecked = blockOfIndexBeingChecked.getUpperBlock();
+                        if (upperOfBlockOfIndexBeingChecked != null) {
+                            System.out.println("SEEEHHH1 " + upperOfBlockOfIndexBeingChecked.toString());
+                        }
+
+                        if ((upperOfBlockOfIndexBeingChecked != null) && (upperOfBlockOfIndexBeingChecked.equals(blockOfIndexToBeRestructured))) {
+                            System.out.println("PUJI TUHAN1");
+                            String endIndexOfBlock = blockOfIndexBeingChecked.getIndexData().get(blockOfIndexBeingChecked.size() - 1).getData().getIndex();
+                            String endIndexOfBlockOfBlockSplit1 = blockIndexSplitPart1.getIndexData().get(blockIndexSplitPart1.size() - 1).getData().getIndex();
+                            System.out.println("blockIndexSplitPArt1 " + blockIndexSplitPart1);
+                            System.out.println("endIndexOfBlock " + endIndexOfBlock + " endIndexOfBlockOfBlockSplit1 " + endIndexOfBlockOfBlockSplit1 + " is " + endIndexOfBlock.compareTo(endIndexOfBlockOfBlockSplit1));
+                            if (endIndexOfBlock.compareTo(endIndexOfBlockOfBlockSplit1) <= 0) {
+                                blockOfIndexBeingChecked.setUpperBlock(blockIndexSplitPart1);
+                            } else {
+                                blockOfIndexBeingChecked.setUpperBlock(blockIndexSplitPart2);
+                            }
+                            System.out.println("SKRG INI1 " + blockOfIndexBeingChecked + " bapa nya ini " + blockOfIndexBeingChecked.getUpperBlock());
+                        }
+                    }
                     //                    System.out.println("UPPERLEVEL" + upperLevelIndexNode.toString());
 
                     index.remove(blockOfIndexToBeRestructured);
@@ -585,35 +607,35 @@ class BPlusTreeIndex {
                     System.out.println("upperBlockOfBlockOfIndexToBeRestructured " + upperBlockOfBlockOfIndexToBeRestructured);
                     index.remove(upperBlockOfBlockOfIndexToBeRestructured);
                     upperBlockOfBlockOfIndexToBeRestructured.addNode(appendedIndexNode);
-                    if (upperBlockOfBlockOfIndexToBeRestructured.size() > maximumSize) {
-                        System.out.println("NYAMPE SINI WOY");
-                        BlockOfIndexNodes upperBlockIndexSplitPart1 = new BlockOfIndexNodes();
-                        BlockOfIndexNodes upperBlockIndexSplitPart2 = new BlockOfIndexNodes();
-                        int indexOfMiddleOfUpper = -1;
-                        if (maximumSize == 2) {
-                            indexOfMiddleOfUpper = (upperBlockOfBlockOfIndexToBeRestructured.size() / 2);
-                        }
-                        if (maximumSize > 2) {
-                            indexOfMiddleOfUpper = (upperBlockOfBlockOfIndexToBeRestructured.size() / 2) - 1;
-                        }
-                        IndexNode middleIndexNodeOfUpper = upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(indexOfMiddleOfUpper);
-                        for (int j = 0; j < indexOfMiddleOfUpper; j++) {
-                            upperBlockIndexSplitPart1.addNode(upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(j));
-                        }
-                        for (int k = (indexOfMiddleOfUpper); k < blockOfIndexToBeRestructured.size(); k++) {
-                            upperBlockIndexSplitPart2.addNode(upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(k));
-                        }
-                        System.out.println("blockIndexSplitPart1: " + blockIndexSplitPart1);
-                        System.out.println("blockIndexSplitPart2: " + blockIndexSplitPart2);
-                        System.out.println("upperBlockIndexSplitPart1: " + upperBlockIndexSplitPart1);
-                        System.out.println("upperBlockIndexSplitPart2: " + upperBlockIndexSplitPart2);
-                        blockIndexSplitPart1.setUpperBlock(upperBlockIndexSplitPart1);
-                        blockIndexSplitPart2.setUpperBlock(upperBlockIndexSplitPart2);
-                    } else {
-                        blockIndexSplitPart1.setUpperBlock(upperBlockOfBlockOfIndexToBeRestructured);
-                        blockIndexSplitPart2.setUpperBlock(upperBlockOfBlockOfIndexToBeRestructured);
-                    }
-
+//                    if (upperBlockOfBlockOfIndexToBeRestructured.size() > maximumSize) {
+//                        System.out.println("NYAMPE SINI WOY");
+//                        BlockOfIndexNodes upperBlockIndexSplitPart1 = new BlockOfIndexNodes();
+//                        BlockOfIndexNodes upperBlockIndexSplitPart2 = new BlockOfIndexNodes();
+//                        int indexOfMiddleOfUpper = -1;
+//                        if (maximumSize == 2) {
+//                            indexOfMiddleOfUpper = (upperBlockOfBlockOfIndexToBeRestructured.size() / 2);
+//                        }
+//                        if (maximumSize > 2) {
+//                            indexOfMiddleOfUpper = (upperBlockOfBlockOfIndexToBeRestructured.size() / 2) - 1;
+//                        }
+//                        IndexNode middleIndexNodeOfUpper = upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(indexOfMiddleOfUpper);
+//                        for (int j = 0; j < indexOfMiddleOfUpper; j++) {
+//                            upperBlockIndexSplitPart1.addNode(upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(j));
+//                        }
+//                        for (int k = (indexOfMiddleOfUpper); k < blockOfIndexToBeRestructured.size(); k++) {
+//                            upperBlockIndexSplitPart2.addNode(upperBlockOfBlockOfIndexToBeRestructured.getIndexData().get(k));
+//                        }
+//                        System.out.println("blockIndexSplitPart1: " + blockIndexSplitPart1);
+//                        System.out.println("blockIndexSplitPart2: " + blockIndexSplitPart2);
+//                        System.out.println("upperBlockIndexSplitPart1: " + upperBlockIndexSplitPart1);
+//                        System.out.println("upperBlockIndexSplitPart2: " + upperBlockIndexSplitPart2);
+//                        blockIndexSplitPart1.setUpperBlock(upperBlockIndexSplitPart1);
+//                        blockIndexSplitPart2.setUpperBlock(upperBlockIndexSplitPart2);
+//                    } else {
+//
+//                    }
+                    blockIndexSplitPart1.setUpperBlock(upperBlockOfBlockOfIndexToBeRestructured);
+                    blockIndexSplitPart2.setUpperBlock(upperBlockOfBlockOfIndexToBeRestructured);
 
                     // Index (int) in the new block of the newly added IndexNode
                     int indexOfAppendedIndexNode = upperBlockOfBlockOfIndexToBeRestructured.getIndexData().indexOf(appendedIndexNode);
@@ -655,6 +677,28 @@ class BPlusTreeIndex {
                     System.out.println("Wht it change? " + upperBlockOfBlockOfIndexToBeRestructured);
                     index.add(0, upperBlockOfBlockOfIndexToBeRestructured);
                     System.out.println("add3 INDEX: " + index.toString());
+                    System.out.println("UDAH GILA " + blockOfIndexToBeRestructured);
+                    for (int z = 0; z < index.size() - 1; z++) {
+                        BlockOfIndexNodes blockOfIndexBeingChecked = index.get(z);
+                        System.out.println("GIMANA " + blockOfIndexBeingChecked.toString());
+                        BlockOfIndexNodes upperOfBlockOfIndexBeingChecked = blockOfIndexBeingChecked.getUpperBlock();
+                        if (upperOfBlockOfIndexBeingChecked != null) {
+                            System.out.println("SEEEHHH " + upperOfBlockOfIndexBeingChecked.toString());
+                        }
+                        if ((upperOfBlockOfIndexBeingChecked != null) && (upperOfBlockOfIndexBeingChecked.equals(blockOfIndexToBeRestructured))) {
+                            System.out.println("PUJI TUHAN");
+                            String endIndexOfBlock = blockOfIndexBeingChecked.getIndexData().get(blockOfIndexBeingChecked.size() - 1).getData().getIndex();
+                            String endIndexOfBlockOfBlockSplit1 = blockIndexSplitPart1.getIndexData().get(blockIndexSplitPart1.size() - 1).getData().getIndex();
+                            System.out.println("blockIndexSplitPArt1 " + blockIndexSplitPart1);
+                            System.out.println("endIndexOfBlock " + endIndexOfBlock + " endIndexOfBlockOfBlockSplit1 " + endIndexOfBlockOfBlockSplit1 + " is " + endIndexOfBlock.compareTo(endIndexOfBlockOfBlockSplit1));
+                            if (endIndexOfBlock.compareTo(endIndexOfBlockOfBlockSplit1) <= 0) {
+                                blockOfIndexBeingChecked.setUpperBlock(blockIndexSplitPart1);
+                            } else {
+                                blockOfIndexBeingChecked.setUpperBlock(blockIndexSplitPart2);
+                            }
+                            System.out.println("SKRG INI " + blockOfIndexBeingChecked + " emak nya ini " + blockOfIndexBeingChecked.getUpperBlock());
+                        }
+                    }
                     index.remove(blockOfIndexToBeRestructured);
                     System.out.println("after INDEX: " + index.toString());
                 }
