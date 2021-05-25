@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class bplustree {
     public static void main(String[] args) {
-        BPlusTreeIndex root = new BPlusTreeIndex(10);
+        BPlusTreeIndex root = new BPlusTreeIndex(2);
 
         RecordNode recordNodeA = new RecordNode();
         ArrayList<String> valueA = new ArrayList<>();
@@ -142,16 +142,9 @@ public class bplustree {
         System.out.println("Search O: " + root.search("O"));
         System.out.println("Search P: " + root.search("P"));
 
-
         long endTime = System.currentTimeMillis();
         System.out.println("Time to search (ms): " + (endTime - startTime) / 1000);
-
-//        firstBlock.addNode(recordNodeA);
-//        firstBlock.addNode(recordNodeC);
-//        firstBlock.addNode(recordNodeD);
-//        System.out.println(firstBlock.toString());
         System.out.println(root.toString());
-
     }
 }
 

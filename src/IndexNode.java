@@ -1,4 +1,4 @@
-// Reference from https://examples.javacodegeeks.com/java-node-example/#:~:text=Applications%20of%20Node%20class&text=Java%20Node%20class%20is%20actually,any%20non%2Dsequential%20Data%20structure. //
+// Gupta, A. N. (2019). Java Node Example. https://examples.javacodegeeks.com/java-node-example/#:~:text=Applications%20of%20Node%20class&text=Java%20Node%20class%20is%20actually,any%20non%2Dsequential%20Data%20structure. //
 class IndexNode {
     private IndexAndDataStored data;
     private BlockOfIndexNodes left, right;
@@ -10,6 +10,7 @@ class IndexNode {
         right = null;
     }
 
+    // Constructor for index node that are NOT 1 level above the root of the tree
     public IndexNode(IndexAndDataStored data, BlockOfIndexNodes left, BlockOfIndexNodes right) {
         this.data = data;
         this.left = left;
@@ -18,6 +19,7 @@ class IndexNode {
         this.rightBlock = null;
     }
 
+    // Constructor for index node that are 1 level above the root of the tree
     public IndexNode(IndexAndDataStored data, BlockOfRecordNodes leftBlock, BlockOfRecordNodes rightBlock) {
         this.data = data;
         this.leftBlock = leftBlock;
@@ -43,6 +45,10 @@ class IndexNode {
         this.leftBlock = leftBlock;
     }
 
+    public void setData(IndexAndDataStored data) {
+        this.data = data;
+    }
+
     // Getter methods
     public BlockOfIndexNodes getLeft() {
         return left;
@@ -55,29 +61,22 @@ class IndexNode {
     public BlockOfRecordNodes getLeftBlock() {
         return leftBlock;
     }
-
     public BlockOfRecordNodes getRightBlock() {
         return rightBlock;
     }
-
     public IndexAndDataStored getData() {
         return data;
     }
 
-    public void setData(IndexAndDataStored data) {
-        this.data = data;
-    }
-
+    // Printing string for better debugging
     public String toStringWithIndexNode() {
         String stringToBeReturned = "[ LeftPointer:" + left.toString() + ", Index:" + data.toString() + ", RightPointer:" + right.toString() + "]";
         return stringToBeReturned;
     }
-
     public String toStringJustIndex() {
         String stringToBeReturned = "[ Index:" + data.toString() + "]";
         return stringToBeReturned;
     }
-
     public String toStringWithBlock() {
         String stringToBeReturned = "[ LeftPointer:" + leftBlock.toString() + ", Index:" + data.toString() + ", RightPointer:" + rightBlock.toString() + "]";
         return stringToBeReturned;

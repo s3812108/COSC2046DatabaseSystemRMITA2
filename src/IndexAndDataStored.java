@@ -27,7 +27,6 @@ class IndexAndDataStored implements Comparable<IndexAndDataStored> {
     public String getIndex() {
         return index;
     }
-
     public ArrayList<String> getDataStored() {
         return dataStored;
     }

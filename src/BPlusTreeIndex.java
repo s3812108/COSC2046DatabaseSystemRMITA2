@@ -120,7 +120,7 @@ class BPlusTreeIndex {
         }
     }
 
-    // reference https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java //
+    // codeMan. (2013). Traversing through all nodes of a binary tree in Java. Stackoverflow. https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java. //
     // Used to traverse and search which BlockOfRecordNodes (On the root) that the searched index belongs to
     public BlockOfRecordNodes traverse(String rnIndex, IndexNode root) {
         System.out.println("index " + index);
@@ -224,7 +224,7 @@ class BPlusTreeIndex {
         return blockToReturn;
     }
 
-    // reference https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java //
+    // codeMan. (2013). Traversing through all nodes of a binary tree in Java. Stackoverflow. https://stackoverflow.com/questions/15306452/traversing-through-all-nodes-of-a-binary-tree-in-java. //
     // Used to traverse and search which BlockOfRecordNodes (On the root) that the searched index belongs to
     public BlockOfIndexNodes traverseTillLastIndexBlock(String rnIndex, IndexNode root, BlockOfIndexNodes currentlyIn) {
         String rootIndex = root.getData().getIndex();

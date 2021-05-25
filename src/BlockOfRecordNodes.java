@@ -8,13 +8,13 @@ class BlockOfRecordNodes {
     public BlockOfRecordNodes() {
     }
 
+    // Function to add a record node into the block of records
     public void addNode(RecordNode recordNode) {
         if (blockData.size() == 0) {
             blockData.add(recordNode);
         } else {
             int indexLocation = blockData.size();
             for (int i = 0; i < blockData.size(); i++) {
-                //System.out.println(blockData.get(i).getData().getIndex() + " compared to " + recordNode.getData().getIndex() + ": " + blockData.get(i).getData().compareTo(recordNode.getData()));
                 if (blockData.get(i).getData().compareTo(recordNode.getData()) > 0) {
                     indexLocation = i;
                     break;
@@ -22,6 +22,11 @@ class BlockOfRecordNodes {
             }
             blockData.add(indexLocation, recordNode);
         }
+    }
+
+    // Returning the size of the block of record nodes
+    public int size() {
+        return blockData.size();
     }
 
     public Boolean hasRoom(int maximumSize) {
@@ -41,18 +46,20 @@ class BlockOfRecordNodes {
         return neighbourRight;
     }
 
-    public void setNeighbourRight(BlockOfRecordNodes neighbourRight) {
-        this.neighbourRight = neighbourRight;
-    }
-
     public BlockOfIndexNodes getParentIndexBlock() {
         return parentIndexBlock;
+    }
+
+    // Setter methods
+    public void setNeighbourRight(BlockOfRecordNodes neighbourRight) {
+        this.neighbourRight = neighbourRight;
     }
 
     public void setParentIndexBlock(BlockOfIndexNodes parentIndexBlock) {
         this.parentIndexBlock = parentIndexBlock;
     }
 
+    // String format adjusted for debugging
     @Override
     public String toString() {
         String blocksToString = "[";
@@ -62,9 +69,4 @@ class BlockOfRecordNodes {
         blocksToString += "]";
         return blocksToString;
     }
-
-    public int size() {
-        return blockData.size();
-    }
-
 }
