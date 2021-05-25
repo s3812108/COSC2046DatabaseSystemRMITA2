@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class bplustree {
     public static void main(String[] args) {
-        BPlusTreeIndex root = new BPlusTreeIndex(2);
+        BPlusTreeIndex root = new BPlusTreeIndex(10);
 
         RecordNode recordNodeA = new RecordNode();
         ArrayList<String> valueA = new ArrayList<>();
@@ -97,7 +97,7 @@ public class bplustree {
 
         ArrayList<String> valueN = new ArrayList<>();
         valueN.add("1");
-        valueN.add("Data content M");
+        valueN.add("Data content N");
         RecordNode recordNodeN = new RecordNode();
         IndexAndDataStored recordN = new IndexAndDataStored("N", valueN);
         recordNodeN.setData(recordN);
