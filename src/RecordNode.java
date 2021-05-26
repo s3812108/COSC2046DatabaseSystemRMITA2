@@ -49,4 +49,9 @@ class RecordNode {
     public ArrayList<RecordNode> getRightRootRecord() {
         return rightRootRecord;
     }
+
+    @Override
+    public String toString() {
+        return "(DataStored: " + data + ")";
+    }
 }

@@ -10,17 +10,25 @@ class BlockOfRecordNodes {
 
     // Function to add a record node into the block of records
     public void addNode(RecordNode recordNode) {
+        boolean duplicate = false;
         if (blockData.size() == 0) {
             blockData.add(recordNode);
         } else {
             int indexLocation = blockData.size();
             for (int i = 0; i < blockData.size(); i++) {
+                if (blockData.get(i).getData().compareTo(recordNode.getData()) == 0) {
+                    duplicate = true;
+                    blockData.get(i).getData().getDataStored().addAll(recordNode.getData().getDataStored());
+                    break;
+                }
                 if (blockData.get(i).getData().compareTo(recordNode.getData()) > 0) {
                     indexLocation = i;
                     break;
                 }
             }
-            blockData.add(indexLocation, recordNode);
+            if (duplicate == false) {
+                blockData.add(indexLocation, recordNode);
+            }
         }
     }
 

@@ -67,7 +67,7 @@ class BlockOfIndexNodes {
         for (int i = 0; i < indexData.size(); i++) {
             blocksToString += indexData.get(i).getData().toString() + " ";
         }
-        blocksToString += "]";
+        blocksToString += "] ******** ";
         return blocksToString;
     }
 }

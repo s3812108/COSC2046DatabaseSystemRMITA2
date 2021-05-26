@@ -16,6 +16,8 @@ public class treeload {
         String datafile = "heap." + pageSize;
         long startTime = 0;
         long finishTime = 0;
+        long startTimeSearch = 0;
+        long finishTimeSearch = 0;
         int numBytesInOneRecord = constants.TOTAL_SIZE;
         int numBytesInSdtnameField = constants.STD_NAME_SIZE;
         int numBytesIntField = Integer.BYTES;
@@ -23,7 +25,7 @@ public class treeload {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         byte[] page = new byte[pageSize];
         FileInputStream inStream = null;
-        BPlusTreeIndex bplustree = new BPlusTreeIndex(20);
+        BPlusTreeIndex bplustree = new BPlusTreeIndex(10);
 
 
         try {
@@ -92,6 +94,10 @@ public class treeload {
                 }
             }
             finishTime = System.nanoTime();
+            startTimeSearch = System.nanoTime();
+            bplustree.search("4507/24/2018 10:00:00 AM");
+            finishTimeSearch = System.nanoTime();
+
         } catch (FileNotFoundException e) {
             System.err.println("File not found " + e.getMessage());
         } catch (IOException e) {
@@ -105,5 +111,7 @@ public class treeload {
 
         long timeInMilliseconds = (finishTime - startTime) / constants.MILLISECONDS_PER_SECOND;
         System.out.println("Time taken: " + timeInMilliseconds + " ms");
+        long timeInMillisecondsSearch = (finishTimeSearch - startTimeSearch) / constants.MILLISECONDS_PER_SECOND;
+        System.out.println("Time taken to Search: " + timeInMillisecondsSearch + " ms");
     }
 }
