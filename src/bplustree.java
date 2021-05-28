@@ -125,6 +125,7 @@ public class bplustree {
         root.addNode(recordNodeD);
         root.addNode(recordNodeH);
 
+
         long startTime = System.currentTimeMillis();
         System.out.println("Search A: " + root.search("A"));
         System.out.println("Search B: " + root.search("B"));
