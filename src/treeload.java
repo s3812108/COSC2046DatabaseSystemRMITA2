@@ -9,9 +9,8 @@ import java.util.Date;
 public class treeload {
     public static void main(String[] args) throws IOException {
         // check for correct number of arguments
-
-
         int pageSize = Integer.parseInt(args[0]);
+        String indexToSearch = args[1];
 
         String datafile = "heap." + pageSize;
         long startTime = 0;
@@ -95,7 +94,8 @@ public class treeload {
             }
             finishTime = System.nanoTime();
             startTimeSearch = System.nanoTime();
-            bplustree.search("4507/24/2018 10:00:00 AM");
+            // Function to find the following query, can be modified //
+            bplustree.search(indexToSearch);
             finishTimeSearch = System.nanoTime();
 
         } catch (FileNotFoundException e) {
